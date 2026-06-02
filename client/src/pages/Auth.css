@@ -1,0 +1,145 @@
+.auth-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  background: #f7f5ff;
+}
+
+.auth-left {
+  flex: 1;
+  background: linear-gradient(rgba(24, 16, 58, 0.65), rgba(24, 16, 58, 0.65)),
+    url("https://images.unsplash.com/photo-1560448204-e02f11c3d0e2")
+      center/cover no-repeat;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+}
+
+.auth-left h1 {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.auth-left p {
+  font-size: 18px;
+  max-width: 460px;
+  line-height: 1.6;
+}
+
+.auth-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 390px;
+  background: white;
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(90, 70, 160, 0.18);
+}
+
+.auth-card h2 {
+  font-size: 30px;
+  color: #111827;
+  margin-bottom: 5px;
+}
+
+.auth-subtitle {
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+.auth-card label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+}
+
+.auth-card input:focus {
+  border-color: #6c63ff;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 13px;
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-btn:hover {
+  background: #574fd6;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 18px;
+  color: #6b7280;
+}
+
+.auth-link a {
+  color: #6c63ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .auth-page {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    padding: 40px 25px;
+    text-align: center;
+  }
+
+  .auth-left h1 {
+    font-size: 34px;
+  }
+
+  .auth-right {
+    padding: 25px;
+  }
+}
+
+.auth-card select {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+  background: white;
+}
+
+.auth-card select:focus {
+  border-color: #6c63ff;
+}
+
+.register-left {
+  background: linear-gradient(rgba(24, 16, 58, 0.65), rgba(24, 16, 58, 0.65)),
+    url("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267")
+      center/cover no-repeat;
+}

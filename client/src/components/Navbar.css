@@ -1,0 +1,110 @@
+/* NAVBAR MAIN */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* LOGO */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  font-size: 26px;
+  color: #6c63ff;
+}
+
+.logo h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 12px;
+  color: gray;
+}
+
+/* NAV LINKS */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  position: relative;
+}
+
+/* ACTIVE LINK (Home underline) */
+.nav-links .active {
+  color: #6c63ff;
+}
+
+.nav-links .active::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #6c63ff;
+  bottom: -5px;
+  left: 0;
+}
+
+/* AUTH BUTTONS */
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.login-btn {
+  padding: 8px 18px;
+  border: 1px solid #6c63ff;
+  border-radius: 8px;
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.register-btn {
+  padding: 8px 18px;
+  background: #6c63ff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* HOVER EFFECT */
+.nav-links a:hover {
+  color: #6c63ff;
+}
+
+.logout-btn {
+  padding: 8px 18px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .navbar {
+    padding: 15px 20px;
+  }
+}

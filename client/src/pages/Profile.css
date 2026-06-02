@@ -1,0 +1,68 @@
+.profile-page {
+  min-height: 100vh;
+  background: #f8f7ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.profile-card {
+  background: white;
+  width: 100%;
+  max-width: 430px;
+  padding: 35px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(80, 70, 150, 0.15);
+}
+
+.profile-avatar {
+  width: 85px;
+  height: 85px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #6c63ff;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.profile-card h2 {
+  color: #111827;
+  margin-bottom: 5px;
+}
+
+.profile-role {
+  color: #6c63ff;
+  font-weight: 600;
+  margin-bottom: 25px;
+  text-transform: capitalize;
+}
+
+.profile-info {
+  text-align: left;
+  background: #faf9ff;
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 25px;
+}
+
+.profile-info p {
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.logout-profile-btn {
+  width: 100%;
+  padding: 13px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
