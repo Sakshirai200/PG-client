@@ -13,7 +13,8 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-  origin: allowedOrigins,
+  //origin: allowedOrigins,
+  origin: "https://pg-client-lawa.vercel.app/register",
   credentials: true
 }));
 app.use(express.json());
