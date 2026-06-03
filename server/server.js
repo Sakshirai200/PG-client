@@ -7,9 +7,14 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
+  origin: allowedOrigins,
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -31,7 +36,7 @@ app.use("/api/admin", adminRoutes);
 const { verifyUser } = require("./middleware/authMiddleware");
 
 app.get("/protected", verifyUser, (req, res) => {
-    res.json({ message: "Protected route accessed", user: req.user });
+  res.json({ message: "Protected route accessed", user: req.user });
 });
 
 // 🔌 MongoDB Connection
@@ -41,11 +46,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Test Route
 app.get("/", (req, res) => {
-    res.send("Server is running");
+  res.send("Server is running");
 });
 
 // Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;
