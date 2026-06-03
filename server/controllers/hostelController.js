@@ -20,7 +20,7 @@ exports.getHostels = async (req, res) => {
     try {
         const { city, minPrice, maxPrice, facility } = req.query;
 
-        let filter = {};
+        let filter = { approved: true };  // Only show admin-approved hostels
 
         // ➤ City filter
         if (city) {
@@ -56,34 +56,34 @@ exports.getHostels = async (req, res) => {
 };
 
 exports.getHostelById = async (req, res) => {
-  try {
-    const hostel = await Hostel.findById(req.params.id);
+    try {
+        const hostel = await Hostel.findById(req.params.id);
 
-    if (!hostel) {
-      return res.status(404).json({ message: "Hostel not found" });
+        if (!hostel) {
+            return res.status(404).json({ message: "Hostel not found" });
+        }
+
+        res.status(200).json(hostel);
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch hostel details",
+            error: error.message,
+        });
     }
-
-    res.status(200).json(hostel);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch hostel details",
-      error: error.message,
-    });
-  }
 };
 
 
 // ➤ GET OWNER HOSTELS
 exports.getMyHostels = async (req, res) => {
     try {
-    const hostels = await Hostel.find({ ownerId: req.user.id });
-    res.status(200).json(hostels);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch owner hostels",
-      error: error.message,
-    });
-  }
+        const hostels = await Hostel.find({ ownerId: req.user.id });
+        res.status(200).json(hostels);
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch owner hostels",
+            error: error.message,
+        });
+    }
 };
 
 // ➤ UPDATE HOSTEL (WITH OWNERSHIP CHECK)

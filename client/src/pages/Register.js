@@ -9,7 +9,7 @@ function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    mobile: "",
+    phone: "",
     password: "",
     role: "user",
   });
@@ -71,9 +71,9 @@ function Register() {
           <label>Mobile Number</label>
           <input
             type="text"
-            name="mobile"
+            name="phone"
             placeholder="Enter mobile number"
-            value={formData.mobile}
+            value={formData.phone}
             onChange={handleChange}
             required
           />
