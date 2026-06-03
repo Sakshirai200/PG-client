@@ -40,9 +40,13 @@ app.get("/protected", verifyUser, (req, res) => {
 });
 
 // 🔌 MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+if (!process.env.MONGO_URI) {
+  console.error("FATAL ERROR: MONGO_URI environment variable is not defined!");
+} else {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.error("MongoDB connection error:", err));
+}
 
 // Test Route
 app.get("/", (req, res) => {
