@@ -3,15 +3,16 @@ services:
     name: pg-server
     env: node
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: FRONTEND_URL
-        value: https://pg-client-lawa.vercel.app
+        sync: false
       - key: JWT_SECRET
-        generateValue: true   # Render auto-generates a secure secret
+        generateValue: true
       - key: MONGO_URI
-        sync: false           # Set this manually in Render dashboard (keep secret)
-      - key: PORT
-        value: 10000          # Render default port
+        sync: false
+
+# Monorepo (client + server in one repo): use this buildCommand instead:
+# buildCommand: npm install && cd ../client && npm install && npm run build && cd ../server

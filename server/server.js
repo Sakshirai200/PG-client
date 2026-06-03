@@ -2,29 +2,38 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
 
-// Middleware
+app.set("trust proxy", 1);
+
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://pg-client-lawa.vercel.app",
+  "http://127.0.0.1:3000",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (/^https:\/\/[\w.-]+\.vercel\.app$/i.test(origin)) return true;
+  if (/^https:\/\/[\w.-]+\.onrender\.com$/i.test(origin)) return true;
+  return false;
+};
+
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS: " + origin));
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(cookieParser());
@@ -35,6 +44,20 @@ const roomRoutes = require("./routes/roomRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+
+app.get("/api/health", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const dbStatus =
+    dbState === 1 ? "connected" : dbState === 2 ? "connecting" : "disconnected";
+  res.json({
+    ok: dbState === 1,
+    db: dbStatus,
+    message:
+      dbState === 1
+        ? "API is ready"
+        : "Database not connected — set MONGO_URI on Render",
+  });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/hostels", hostelRoutes);
@@ -49,21 +72,32 @@ app.get("/protected", verifyUser, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
 
-// 🔌 MongoDB Connection
 if (!process.env.MONGO_URI) {
-  console.error("FATAL ERROR: MONGO_URI environment variable is not defined!");
+  console.error("FATAL: MONGO_URI is not set. Auth and data routes will fail.");
 } else {
-  mongoose.connect(process.env.MONGO_URI)
+  mongoose
+    .connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
-    .catch(err => console.error("MongoDB connection error:", err));
+    .catch((err) => console.error("MongoDB connection error:", err));
 }
 
-// Test Route
-app.get("/", (req, res) => {
-  res.send("Server is running");
-});
+const clientBuild = path.join(__dirname, "..", "client", "build");
+const hasClientBuild = fs.existsSync(path.join(clientBuild, "index.html"));
 
-// Server Start
+if (process.env.NODE_ENV === "production" && hasClientBuild) {
+  app.use(express.static(clientBuild));
+  app.get(/^(?!\/api).*/, (req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(clientBuild, "index.html"), (err) => {
+      if (err) next();
+    });
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("Server is running");
+  });
+}
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
