@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 import "./OwnerDashboard.css";
@@ -15,11 +15,7 @@ function EditRoom() {
     vacancy: "",
   });
 
-  useEffect(() => {
-    fetchRoom();
-  }, [roomId]);
-
-  const fetchRoom = async () => {
+  const fetchRoom = useCallback(async () => {
     try {
       const res = await API.get(`/rooms/${roomId}`);
 
@@ -33,7 +29,11 @@ function EditRoom() {
     } catch (error) {
       alert("Failed to load room");
     }
-  };
+  }, [roomId]);
+
+  useEffect(() => {
+    fetchRoom();
+  }, [fetchRoom]);
 
   const handleChange = (e) => {
     setFormData({

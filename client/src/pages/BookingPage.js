@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./BookingPage.css";
@@ -16,11 +16,7 @@ function BookingPage() {
     persons: 1,
   });
 
-  useEffect(() => {
-    fetchRoomDetails();
-  }, [roomId]);
-
-  const fetchRoomDetails = async () => {
+  const fetchRoomDetails = useCallback(async () => {
     try {
       const res = await API.get(`/rooms/${roomId}`);
       setRoom(res.data);
@@ -28,7 +24,11 @@ function BookingPage() {
       console.log(error);
       alert("Failed to load room details");
     }
-  };
+  }, [roomId]);
+
+  useEffect(() => {
+    fetchRoomDetails();
+  }, [fetchRoomDetails]);
 
   const handleChange = (e) => {
     setFormData({

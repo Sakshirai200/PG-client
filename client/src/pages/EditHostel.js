@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./OwnerDashboard.css";
@@ -18,11 +18,7 @@ function EditHostel() {
     priceRange: "",
   });
 
-  useEffect(() => {
-    fetchHostel();
-  }, [id]);
-
-  const fetchHostel = async () => {
+  const fetchHostel = useCallback(async () => {
     try {
       const res = await API.get(`/hostels/${id}`);
 
@@ -39,7 +35,11 @@ function EditHostel() {
     } catch (error) {
       alert("Failed to load hostel details");
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchHostel();
+  }, [fetchHostel]);
 
   const handleChange = (e) => {
     setFormData({
