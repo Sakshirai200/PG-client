@@ -7,7 +7,7 @@ function ensureDbConnected(res) {
   if (mongoose.connection.readyState !== 1) {
     res.status(503).json({
       message:
-        "Database not connected. Add a valid MONGO_URI in Render environment variables.",
+        "Database not connected. Set MONGO_URI in Vercel (backend project) and allow 0.0.0.0/0 in MongoDB Atlas.",
     });
     return false;
   }

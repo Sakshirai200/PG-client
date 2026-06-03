@@ -1,6 +1,6 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const { connectDB, getDbStatus } = require("./db");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const fs = require("fs");
@@ -45,18 +45,67 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
-app.get("/api/health", (req, res) => {
-  const dbState = mongoose.connection.readyState;
-  const dbStatus =
-    dbState === 1 ? "connected" : dbState === 2 ? "connecting" : "disconnected";
-  res.json({
-    ok: dbState === 1,
-    db: dbStatus,
-    message:
-      dbState === 1
-        ? "API is ready"
-        : "Database not connected — set MONGO_URI on Render",
-  });
+app.get("/api/health", async (req, res) => {
+  const hasUri = Boolean(process.env.MONGO_URI?.trim());
+
+  if (!hasUri) {
+    return res.json({
+      ok: false,
+      db: "disconnected",
+      mongoUriConfigured: false,
+      message:
+        "MONGO_URI is missing. Add it in Vercel → Project (pg-backend) → Settings → Environment Variables, then redeploy.",
+    });
+  }
+
+  try {
+    await connectDB();
+    const dbStatus = getDbStatus();
+    res.json({
+      ok: dbStatus === "connected",
+      db: dbStatus,
+      mongoUriConfigured: true,
+      message: dbStatus === "connected" ? "API is ready" : "Still connecting to MongoDB",
+    });
+  } catch (err) {
+    res.json({
+      ok: false,
+      db: "disconnected",
+      mongoUriConfigured: true,
+      message:
+        "Cannot reach MongoDB. Check MONGO_URI value, Atlas user/password, and Network Access (allow 0.0.0.0/0).",
+      error: process.env.NODE_ENV === "production" ? undefined : err.message,
+    });
+  }
+});
+
+if (!process.env.MONGO_URI?.trim()) {
+  console.error("FATAL: MONGO_URI is not set. Auth and data routes will fail.");
+} else {
+  connectDB().catch((err) =>
+    console.error("MongoDB connection error:", err.message),
+  );
+}
+
+app.use(async (req, res, next) => {
+  if (!req.path.startsWith("/api") || req.path === "/api/health") {
+    return next();
+  }
+  if (!process.env.MONGO_URI?.trim()) {
+    return res.status(503).json({
+      message:
+        "MONGO_URI is not set on the server. Add it in Vercel environment variables and redeploy.",
+    });
+  }
+  try {
+    await connectDB();
+    next();
+  } catch {
+    res.status(503).json({
+      message:
+        "Database unavailable. Verify MONGO_URI and MongoDB Atlas Network Access (0.0.0.0/0).",
+    });
+  }
 });
 
 app.use("/api/auth", authRoutes);
@@ -71,15 +120,6 @@ const { verifyUser } = require("./middleware/authMiddleware");
 app.get("/protected", verifyUser, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
-
-if (!process.env.MONGO_URI) {
-  console.error("FATAL: MONGO_URI is not set. Auth and data routes will fail.");
-} else {
-  mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB Connected"))
-    .catch((err) => console.error("MongoDB connection error:", err));
-}
 
 const clientBuild = path.join(__dirname, "..", "client", "build");
 const hasClientBuild = fs.existsSync(path.join(clientBuild, "index.html"));
@@ -98,9 +138,12 @@ if (process.env.NODE_ENV === "production" && hasClientBuild) {
   });
 }
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
 module.exports = app;
+
+// Local / Render: start HTTP server. Vercel uses the exported app only.
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
