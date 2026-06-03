@@ -30,7 +30,7 @@ function Home() {
         <div className="pg-cards">
 
           <div className="pg-card">
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2" />
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2" alt="Comfort Living PG" />
             <div className="pg-info">
               <h3>Comfort Living PG</h3>
               <p>Bangalore</p>
@@ -39,7 +39,7 @@ function Home() {
           </div>
 
           <div className="pg-card">
-            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85" />
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85" alt="Green View PG" />
             <div className="pg-info">
               <h3>Green View PG</h3>
               <p>Mangalore</p>
@@ -48,7 +48,7 @@ function Home() {
           </div>
 
           <div className="pg-card">
-            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" />
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" alt="Happy Stay PG" />
             <div className="pg-info">
               <h3>Happy Stay PG</h3>
               <p>Mysore</p>

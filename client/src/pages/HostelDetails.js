@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import API from "../services/api";
 import "./HostelDetails.css";
@@ -14,13 +14,7 @@ function HostelDetails() {
     comment: "",
   });
 
-  useEffect(() => {
-    fetchHostelDetails();
-    fetchRooms();
-    fetchReviews();
-  }, [id]);
-
-  const fetchHostelDetails = async () => {
+  const fetchHostelDetails = useCallback(async () => {
     try {
       const res = await API.get(`/hostels/${id}`);
       setHostel(res.data);
@@ -28,25 +22,31 @@ function HostelDetails() {
       console.log(error);
       alert("Failed to load hostel details");
     }
-  };
+  }, [id]);
 
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       const res = await API.get(`/rooms/hostel/${id}`);
       setRooms(res.data);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [id]);
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const res = await API.get(`/reviews/${id}`);
       setReviews(res.data);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchHostelDetails();
+    fetchRooms();
+    fetchReviews();
+  }, [fetchHostelDetails, fetchRooms, fetchReviews]);
 
   if (!hostel) {
     return <h2 className="loading">Loading...</h2>;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import API from "../services/api";
 import "./OwnerDashboard.css";
@@ -7,18 +7,18 @@ function ManageRooms() {
   const { hostelId } = useParams();
   const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    fetchRooms();
-  }, [hostelId]);
-
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       const res = await API.get(`/rooms/hostel/${hostelId}`);
       setRooms(res.data);
     } catch (error) {
       alert("Failed to load rooms");
     }
-  };
+  }, [hostelId]);
+
+  useEffect(() => {
+    fetchRooms();
+  }, [fetchRooms]);
 
   const deleteRoom = async (roomId) => {
     if (!window.confirm("Are you sure you want to delete this room?")) return;

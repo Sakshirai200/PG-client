@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import API from "../services/api";
 import "./Hostels.css";
@@ -13,14 +13,6 @@ function Hostels() {
     minPrice: "",
     maxPrice: "",
   });
-
-  useEffect(() => {
-    fetchHostels();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [filters, hostels]);
 
   const fetchHostels = async () => {
     try {
@@ -39,7 +31,7 @@ function Hostels() {
     });
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let updated = [...hostels];
 
     // Search by name / city / location
@@ -73,7 +65,15 @@ function Hostels() {
     }
 
     setFilteredHostels(updated);
-  };
+  }, [filters, hostels]);
+
+  useEffect(() => {
+    fetchHostels();
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const clearFilters = () => {
     setFilters({
