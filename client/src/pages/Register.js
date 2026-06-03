@@ -30,7 +30,7 @@ function Register() {
       alert("Registration successful");
       navigate("/login");
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      alert(error.response?.data?.message || error.response?.data?.error || error.message || "Registration failed");
     }
   };
 

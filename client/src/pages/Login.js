@@ -60,7 +60,7 @@ function Login() {
       }
     } catch (error) {
       console.log("LOGIN ERROR:", error.response?.data);
-      alert(error.response?.data?.message || "Login failed");
+      alert(error.response?.data?.message || error.response?.data?.error || error.message || "Login failed");
     }
   };
 
