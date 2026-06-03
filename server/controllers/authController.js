@@ -51,15 +51,16 @@ exports.login = async (req, res) => {
     // Create token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      "secretkey",
+      process.env.JWT_SECRET || "secretkey",
       { expiresIn: "1d" }
     );
 
-    // Store in cookie also
+    // Store in cookie also — must be secure + sameSite none for cross-origin (Render <-> Vercel)
+    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,          // true in production (HTTPS required)
+      sameSite: isProduction ? "none" : "lax", // none required for cross-origin
     });
 
     // Send token to frontend also

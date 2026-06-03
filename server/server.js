@@ -9,14 +9,23 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL
+  "https://pg-client-lawa.vercel.app",
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-app.use(cors({
-  //origin: allowedOrigins,
-  origin: "https://pg-client-lawa.vercel.app/register",
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS: " + origin));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
